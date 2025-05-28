@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  postgres-vendas-online:
+    image: postgres:16
+    container_name: vendas-online
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 123mudar
+      POSTGRES_DB: postgres-vendas-online
+    volumes:
+      - postgres-vendasonline:/var/lib/postgres/data
+
+volumes:
+  postgres-vendasonline:
