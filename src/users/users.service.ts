@@ -1,19 +1,50 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { User } from './interfaces/users.interface';
-import { hashPassword } from 'src/utils/bycript';
+import { hash } from 'bcrypt';
 
 @Injectable()
 export class UsersService {
-  private users: User[] = [];
+  constructor(private readonly prisma: PrismaService) {}
 
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const passwordHashed = await hashPassword(createUserDto.password);
+  async createUser(createUserDto: CreateUserDto) {
+    try {
+      const existUser = await this.prisma.users.findFirst({
+        where: {
+          OR: [{ email: createUserDto.email }, { cpf: createUserDto.cpf }],
+        },
+      });
 
-    return {
-      ...createUserDto,
-      password: passwordHashed,
-      id: 1,
-    };
+      if (existUser) {
+        return {
+          message:
+            existUser.email === createUserDto.email
+              ? 'E-mail já existe'
+              : 'CPF já existe',
+          statusCode: HttpStatus.CONFLICT,
+          success: false,
+        };
+      }
+
+      const hashPassword = await hash(createUserDto.password, 10);
+
+      const createNewUser = await this.prisma.users.create({
+        data: {
+          name: createUserDto.name,
+          email: createUserDto.email,
+          phone: createUserDto.phone,
+          cpf: createUserDto.cpf,
+          password: hashPassword,
+        },
+        omit: { password: true },
+      });
+      return createNewUser;
+    } catch (error) {
+      return {
+        message: `Caiu no catch ${error}`,
+        statusCode: HttpStatus.BAD_GATEWAY,
+        success: false,
+      };
+    }
   }
 }
