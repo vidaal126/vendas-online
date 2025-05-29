@@ -13,6 +13,6 @@ model Users {
   name     String
   email    String @unique
   phone    String
-  cpf      String
+  cpf      String @unique
   password String
 }
