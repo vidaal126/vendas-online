@@ -1,26 +1,42 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
+  constructor(private readonly prisma: PrismaService) {}
 
-  findAll() {
-    return `This action returns all users`;
-  }
+  async createUser(createUserDto: CreateUserDto) {
+    try {
+      const existUser = await this.prisma.users.findUnique({
+        where: { email: createUserDto.email },
+      });
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+      if (existUser) {
+        return {
+          message: 'Usuário já existe',
+          statusCode: HttpStatus.CONFLICT,
+          success: false,
+        };
+      }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+      const createNewUser = await this.prisma.users.create({
+        data: {
+          name: createUserDto.name,
+          email: createUserDto.email,
+          phone: createUserDto.phone,
+          cpf: createUserDto.cpf,
+          password: createUserDto.password,
+        },
+        omit: { password: true },
+      });
+      return createNewUser;
+    } catch (error) {
+      return {
+        message: `Caiu no catch ${error}`,
+        statusCode: HttpStatus.BAD_GATEWAY,
+        success: false,
+      };
+    }
   }
 }
