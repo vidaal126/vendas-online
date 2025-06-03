@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { CreateUserDto } from 'src/users/interfaces/dto/create-user.dto';
 import { PrismaRepository } from 'src/users/infra/prisma/prisma.repository';
-import { hashPassword } from 'src/utils/bycript';
+import { hashPassword } from 'src/shared/utils/bycript';
 import { ExistUserUseCase } from './existUser.useCase';
 
 @Injectable()

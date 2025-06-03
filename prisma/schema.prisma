@@ -9,10 +9,40 @@ datasource db {
 }
 
 model Users {
-  id       String    @id @default(uuid())
-  name     String
-  email    String @unique
-  phone    String
-  cpf      String @unique
-  password String
+  id          String       @id @default(uuid())
+  name        String
+  email       String       @unique
+  phone       String
+  cpf         String       @unique
+  password    String
+  transations Transation[] // O nome 'transations' (plural) é uma convenção comum
+}
+
+model Transation {
+  id         String   @id @default(uuid())
+  name       String // "Nome" da transação, talvez "descrição" ou "tipo"?
+  value      Float
+  data       DateTime
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt // @updatedAt para atualizar automaticamente
+  // total_amount Float // Recomendo remover ou repensar este campo aqui
+
+  // --- Campos para o relacionamento ---
+  userId String // Chave estrangeira que referencia o id do usuário
+  user   Users  @relation(fields: [userId], references: [id]) // Define a relação
+
+  // Sugestões adicionais:
+  type     Types // ENTRADA ou SAIDA
+  category Categories // Ex: "Investimento", "Salário", "Despesa Fixa"
+}
+
+enum Types {
+  ENTRADA
+  SAIDA
+}
+
+enum Categories {
+  INVESTIMENTO
+  SALARIO
+  DESPESA
 }

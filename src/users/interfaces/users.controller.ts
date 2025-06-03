@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { CreateUserUseCase } from './aplication/useCase/createUser.useCase';
-import { FindUserByEmailOrCpfUseCase } from './aplication/useCase/findUserByEmailOrCpf.useCase';
+import { CreateUserUseCase } from '../aplication/useCase/createUser.useCase';
+import { FindUserByEmailOrCpfUseCase } from '../aplication/useCase/findUserByEmailOrCpf.useCase';
 
 @Controller('users')
 export class UsersController {

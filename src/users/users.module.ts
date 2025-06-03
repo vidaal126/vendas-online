@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { UsersController } from './users.controller';
+import { UsersController } from './interfaces/users.controller';
 import { PrismaModule } from 'src/users/infra/prisma/prisma.module';
 import { CreateUserUseCase } from './aplication/useCase/createUser.useCase';
 import { FindUserByEmailOrCpfUseCase } from './aplication/useCase/findUserByEmailOrCpf.useCase';

@@ -1,4 +1,4 @@
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { CreateUserDto } from 'src/users/interfaces/dto/create-user.dto';
 import { PrismaService } from './prisma.service';
 import { HttpStatus, Injectable } from '@nestjs/common';
 
